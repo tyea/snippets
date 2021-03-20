@@ -1,0 +1,3 @@
+composer require phpcompatibility/php-compatibility
+composer require dealerdirect/phpcodesniffer-composer-installer
+php vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 7.2 /var/www/vhosts/example.com
