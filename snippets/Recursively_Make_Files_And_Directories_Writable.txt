@@ -1,0 +1,3 @@
+sudo chown -R ubuntu:www-data /var/www/example.com
+sudo find /var/www/example.com -type f -exec chmod 664 {} \;
+sudo find /var/www/example.com -type d -exec chmod 775 {} \;
