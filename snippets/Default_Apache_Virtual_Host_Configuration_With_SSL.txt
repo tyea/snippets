@@ -1,14 +1,14 @@
 <VirtualHost *:443>
-    ServerName www.example.com
-    DocumentRoot /var/www/html/public
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog /dev/null combined
+	ServerName www.example.com
+	DocumentRoot /var/www/html/public
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog /dev/null combined
 	SSLEngine on
 	SSLCertificateKeyFile /etc/apache2/ssl/server.key
 	SSLCertificateChainFile /etc/apache2/ssl/server.ca
 	SSLCertificateFile /etc/apache2/ssl/server.crt
-    <Directory /var/www/html/public>
-        AllowOverride all
+	<Directory /var/www/html/public>
+		AllowOverride all
 		Options None +FollowSymLinks
-    </Directory>
+	</Directory>
 </VirtualHost>
