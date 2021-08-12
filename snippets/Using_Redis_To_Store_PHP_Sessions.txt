@@ -1,0 +1,11 @@
+sudo apt install redis
+sudo apt install php7.4-redis
+sudo vim /etc/php/7.4/apache2/php.ini
+
+session.save_handler = redis
+session.save_path = "tcp://127.0.0.1:6379"
+session.cookie_lifetime = 86400
+session.gc_probability = 0
+session.gc_maxlifetime = 86400
+
+sudo systemctl restart apache2
