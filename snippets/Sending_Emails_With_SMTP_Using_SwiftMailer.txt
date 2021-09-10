@@ -1,0 +1,23 @@
+<?php
+
+// composer require swiftmailer/swiftmailer
+
+require(__DIR__ . "/vendor/autoload.php");
+
+use Swift_SmtpTransport as SmtpTransport;
+use Swift_Message as Message;
+use Swift_Mailer as Mailer;
+
+$transport = new SmtpTransport("smtp.example.com", 587, "ssl");
+$transport->setUsername("username");
+$transport->setPassword("password");
+
+$message = new Message("Subject");
+$message->setFrom(["john@example.com" => "John Doe"]);
+$message->setTo(["jane@example.com" => "Jane Doe"]);
+$message->setBody("Body");
+
+$mailer = new Mailer($transport);
+if (!$mailer->send($message)) {
+	throw new Exception();
+}
