@@ -8,7 +8,7 @@ use Swift_SmtpTransport as SmtpTransport;
 use Swift_Message as Message;
 use Swift_Mailer as Mailer;
 
-$transport = new SmtpTransport("smtp.example.com", 587, "ssl");
+$transport = new SmtpTransport("smtp.example.com", 587, "tls");
 $transport->setUsername("username");
 $transport->setPassword("password");
 
