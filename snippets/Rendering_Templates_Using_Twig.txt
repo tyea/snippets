@@ -1,0 +1,12 @@
+<?php
+
+// composer require twig/twig
+
+require(__DIR__ . "/vendor/autoload.php");
+
+use Twig\Loader\FilesystemLoader as Loader;
+use Twig\Environment as Engine;
+
+$loader = new Loader(__DIR__ . "/Templates");
+$engine = new Engine($loader);
+echo $engine->render("foo.twig", ["bar" => "BAR"]);
