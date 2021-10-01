@@ -1,0 +1,3 @@
+var escape = function (input) {
+	return input.replaceAll("&", "&amp;").replaceAll("\"", "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+};
