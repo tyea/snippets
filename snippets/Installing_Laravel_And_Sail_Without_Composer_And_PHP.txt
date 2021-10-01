@@ -1,0 +1,5 @@
+docker run --rm --interactive --tty --volume $(pwd):/var/www/html --workdir /var/www/html laravelsail/php80-composer composer create-project laravel/laravel foo
+sudo chown -R tom:tom foo
+cd foo
+docker run --rm --interactive --tty --volume $(pwd):/var/www/html --workdir /var/www/html laravelsail/php80-composer php artisan sail:install
+./vendor/bin/sail up
