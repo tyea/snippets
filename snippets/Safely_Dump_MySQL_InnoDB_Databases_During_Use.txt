@@ -1,0 +1,1 @@
+mysqldump -u root -p --single-transaction --skip-lock-tables --quick database | gzip > dump.sql.gz
