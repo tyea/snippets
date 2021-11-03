@@ -1,0 +1,20 @@
+CREATE TABLE `organisations` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `users` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
+    `organisation_id` BIGINT UNSIGNED NOT NULL,
+    `first_name` VARCHAR(255) NOT NULL,
+    `last_name` VARCHAR(255) NOT NULL,
+    `email_address` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`organisation_id`) REFERENCES `organisations`(`id`),
+    UNIQUE (`email_address`)
+);
