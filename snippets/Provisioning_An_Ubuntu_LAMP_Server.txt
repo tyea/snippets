@@ -17,7 +17,7 @@ sudo vim /etc/apache2/sites-enabled/000-default.conf
         ErrorLog ${APACHE_LOG_DIR}/error.log
         CustomLog ${APACHE_LOG_DIR}/access.log combined
         <Directory /var/www/html/public>
-                AllowOverride all
+                AllowOverride All
                 Options None +FollowSymLinks
         </Directory>
 </VirtualHost>
