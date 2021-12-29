@@ -2,5 +2,5 @@
 
 function escape($input)
 {
-	return htmlspecialchars($input, ENT_COMPAT, "UTF-8")
+	return htmlspecialchars($input, ENT_COMPAT, "UTF-8");
 }
