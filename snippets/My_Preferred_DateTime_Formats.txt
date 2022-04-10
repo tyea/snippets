@@ -5,7 +5,7 @@ define("BACKEND_DATE", "Y-m-d");
 define("BACKEND_TIME", "H:i:sP");
 define("BACKEND_DATETIME", BACKEND_DATE . "\\T" . BACKEND_TIME); // 2022-04-10T10:44:40+02:00
 
-// custom 
-define("FRONTEND_DATE", "D j M Y");
+// rfc 7231
+define("FRONTEND_DATE", "D, j M Y");
 define("FRONTEND_TIME", "H:i T");
-define("FRONTEND_DATETIME", FRONTEND_DATE . " " . FRONTEND_TIME); // Sun 10 Apr 2022 11:20 CEST
+define("FRONTEND_DATETIME", FRONTEND_DATE . " " . FRONTEND_TIME); // Sun, 10 Apr 2022 11:20 CEST
