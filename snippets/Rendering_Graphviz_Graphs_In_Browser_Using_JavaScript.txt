@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/viz.js@2.1.2/viz.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/viz.js@2.1.2/full.render.js"></script>
+        <script src="https://unpkg.com/jquery@2.2.4/dist/jquery.min.js"></script>
+        <script>
+            $().ready(function () {
+                $.ajax({
+                    method: "GET",
+                    url: "/graph.dot",
+                    cache: false,
+                    success: function (response) {
+                        let renderer = new Viz();
+                        renderer.renderSVGElement(response).then(function (svgElement) {
+                            $("#output").html(svgElement);
+                        }).catch (function (error) {
+                            $("#output").html("<p>Whoops, something went wrong!</p><p>" + error + "</p>");
+                        });
+                    },
+                    error: function () {
+                        $("#output").html("<p>Whoops, something went wrong!</p>");
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="output">
+            Loading...
+        </div>
+    </body>
+</html>
