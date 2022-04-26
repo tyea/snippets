@@ -1,0 +1,153 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\BaseController;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as BaseResponse;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
+
+class ApiController extends BaseController
+{
+	protected $model = "\\App\\Models\\User";
+
+	protected $scopes = [];
+
+	protected $filters = [
+		"name",
+		"email"
+	];
+
+	protected $sorts = [
+		"created_at"
+	];
+
+	protected $limit = 50;
+
+	protected $rules = [
+		"name" => "required|string|min:1|max:255",
+		"email" => "required|string|email|min:1|max:255|unique:users,email",
+		"password" => "required|string|min:8"
+	];
+
+	protected $clauses = [
+		"NULL" => "whereNull",
+		"NOT_NULL" => "whereNotNull"
+	];
+
+	protected $operators = [
+		"IS" => "=",
+		"IS_NOT" => "!=",
+		"GT" => ">",
+		"GTE" => ">=",
+		"LT" => "<",
+		"LTE" => "<=",
+		"LIKE" => "like",
+		"NOT_LIKE" => "not like"
+	];
+
+	protected function model(): Model
+	{
+		$model = $this->model;
+		return new $model();
+	}
+
+	protected function primaryKey(): string
+	{
+		return $this->model()->getKeyName();
+	}
+
+	protected function query(): Builder
+	{
+		$query = call_user_func([$this->model, "query"]);
+		foreach ($this->scopes as $scope) {
+			call_user_func([$query, $scope]);
+		}
+		return $query;
+	}
+
+	protected function filter(Builder $query, string $column, string $value): void
+	{
+		foreach ($this->clauses as $symbol => $clause) {
+			if ($value == $symbol) {
+				call_user_func([$query, $clause], $column);
+				return;
+			}
+		}
+		foreach ($this->operators as $symbol => $operator) {
+			$expression = $symbol . ".";
+			if (Str::startsWith($value, $expression)) {
+				$query->where($column, $operator, Str::after($value, $expression));
+				return;
+			}
+		}
+		$query->where($column, "=", $value);
+	}
+
+	protected function sort(Builder $query, string $column, ?string $direction): void
+	{
+		if (in_array($column, $this->sorts)) {
+			if (!in_array($direction, ["ASC", "DESC"])) {
+				$direction = "ASC";
+			}
+			$query->orderBy($column, Str::lower($direction));
+		}
+	}
+
+	public function index(Request $request): BaseResponse
+	{
+		$query = $this->query();
+		foreach ($this->filters as $filter) {
+			if ($request->has($filter)) {
+				$this->filter($query, $filter, $request->get($filter));
+			}
+		}
+		if ($request->has("sort")) {
+			$this->sort($query, $request->get("sort"), $request->get("sort_direction"));
+		}
+		$paginator = $query->paginate($this->limit);
+		return Response::json([
+			"data" => $paginator->items(),
+			"meta" => [
+				"first" => 1,
+				"current" => $paginator->currentPage(),
+				"last" => $paginator->lastPage(),
+				"total" => $paginator->total()
+			]
+		]);
+	}
+
+	public function store(Request $request): BaseResponse
+	{
+		$data = $request->validate($this->rules);
+		$model = $this->model();
+		$model->fill($data);
+		$model->save();
+		return Response::json(["data" => $model]);
+	}
+
+	public function show(Request $request, $primaryKey): BaseResponse
+	{
+		$model = $this->query()->where($this->primaryKey(), "=", $primaryKey)->firstOrFail();
+		return Response::json(["data" => $model]);
+	}
+
+	public function update(Request $request, $primaryKey): BaseResponse
+	{
+		$model = $this->query()->where($this->primaryKey(), "=", $primaryKey)->firstOrFail();
+		$data = $request->validate($this->rules);
+		$model->fill($data);
+		$model->save();
+		return Response::json(["data" => $model]);
+	}
+
+	public function destroy(Request $request, $primaryKey): BaseResponse
+	{
+		$model = $this->query()->where($this->primaryKey(), "=", $primaryKey)->firstOrFail();
+		$model->delete();
+		return Response::json(["data" => null]);
+	}
+}
