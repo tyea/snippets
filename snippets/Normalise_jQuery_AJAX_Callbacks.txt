@@ -1,1 +1,27 @@
+// success: ajaxSuccess(function (data, status, jqXhr) {
+// })
 
+let ajaxSuccess = function (callback) {
+	return function (data, textStatus, jqXhr) {
+		callback(jqXhr.responseJSON, jqXhr.status, jqXhr);
+	};
+};
+
+// error: ajaxError(function (data, status, jqXhr) {
+// })
+
+let ajaxError = function (callback) {
+	return function (jqXhr, textStatus, errorThrown) {
+		jqXhr.errorThrown = errorThrown;
+		callback(jqXhr.responseJSON, jqXhr.status, jqXhr);
+	};
+};
+
+// complete: ajaxComplete(function (data, status, jqXhr) {
+// })
+
+let ajaxComplete = function (callback) {
+	return function (jqXhr, textStatus) {
+		callback(jqXhr.responseJSON, jqXhr.status, jqXhr);
+	};
+};
