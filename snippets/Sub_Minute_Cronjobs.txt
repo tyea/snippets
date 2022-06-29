@@ -1,0 +1,13 @@
+vim repeat_cronjob.bash
+
+DELAY=${1}
+CRONJOB=${2}
+while (test ${SECONDS} -lt 60)
+do
+	${CRONJOB} &
+	sleep ${DELAY}
+done
+
+crontab -e
+
+* * * * * bash /home/foo/repeat_cronjob.bash 1 "bash /home/foo/bar.bash"
