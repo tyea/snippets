@@ -1,6 +1,0 @@
-authenticate
-read
-validate
-authorise
-write
-respond
