@@ -1,0 +1,69 @@
+<?php
+
+define("LOAD_AVERAGE_PERCENT_THRESHOLD", 80);
+define("USED_DISK_SPACE_PERCENT_THRESHOLD", 80);
+define("USED_MEMORY_PERCENT_THRESHOLD", 80);
+define("THRESHOLD_CALLABLE", "notify");
+
+function notify($metric, $percent)
+{
+	$label = ucwords(strtolower(str_replace("_", " ", $metric)));
+	$message = $label . ": " . $percent . "%";
+	echo $message . "\n";
+	/*
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, "https://hooks.slack.com/services/ABC/XYZ/qwerty");
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(["text" => $message]));
+	curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_exec($ch);
+	if (curl_errno($ch)) {
+		echo curl_error($ch) . "\n";
+	}
+	curl_close($ch);
+	*/
+}
+
+function get_load_average_percent()
+{
+	$assumedCores = intval(shell_exec("cat /proc/cpuinfo | grep \"^processor\" | wc -l"));
+	$cores = max(1, $assumedCores);
+	$loadAverages = sys_getloadavg();
+	$loadAverage = $loadAverages[0];
+	$loadAveragePercent = round(($loadAverage / $cores) * 100, 2);
+	return $loadAveragePercent;
+}
+
+function get_used_disk_space_percent()
+{
+	$totalDiskSpace = disk_total_space("/");
+	$freeDiskSpace = disk_free_space("/");
+	$usedDiskSpace = $totalDiskSpace - $freeDiskSpace;
+	$usedDiskSpacePercent = round(($usedDiskSpace / $totalDiskSpace) * 100, 2);
+	return $usedDiskSpacePercent;
+}
+
+function get_used_memory_percent()
+{
+	$totalMemory = intval(shell_exec("grep MemTotal /proc/meminfo | awk '{print \$2}'"));
+	$freeMemory = intval(shell_exec("grep MemAvailable /proc/meminfo | awk '{print \$2}'"));
+	$usedMemory = $totalMemory - $freeMemory;
+	$usedMemoryPercent = round(($usedMemory / $totalMemory) * 100, 2);
+	return $usedMemoryPercent;
+}
+
+$loadAveragePercent = get_load_average_percent();
+if ($loadAveragePercent >= LOAD_AVERAGE_PERCENT_THRESHOLD) {
+	call_user_func_array(THRESHOLD_CALLABLE, ["LOAD_AVERAGE", $loadAveragePercent]);
+}
+
+$usedDiskSpacePercent = get_used_disk_space_percent();
+if ($usedDiskSpacePercent >= USED_DISK_SPACE_PERCENT_THRESHOLD) {
+	call_user_func_array(THRESHOLD_CALLABLE, ["USED_DISK_SPACE", $usedDiskSpacePercent]);
+}
+
+$usedMemoryPercent = get_used_memory_percent();
+if ($usedMemoryPercent >= USED_MEMORY_PERCENT_THRESHOLD) {
+	call_user_func_array(THRESHOLD_CALLABLE, ["USED_MEMORY", $usedMemoryPercent]);
+}
