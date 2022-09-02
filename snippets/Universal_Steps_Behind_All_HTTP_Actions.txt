@@ -1,6 +1,6 @@
-* Authenticate
-* Read
-* Validate
-* Authorise
-* Write
-* Respond
+Authenticate
+Read
+Validate
+Authorise
+Write
+Respond
