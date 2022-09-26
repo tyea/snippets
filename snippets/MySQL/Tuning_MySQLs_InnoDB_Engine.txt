@@ -1,11 +1,13 @@
 # First, you need to decide how much RAM to dedicate to MySQL. On a server
 # running Apache, PHP, and MySQL you should dedicate roughly 25% of the server's
 # total RAM. On a server just running MySQL you should dedicate roughly 75% of
-# the server's total RAM.
-
-# Then set innodb_buffer_pool_size to that value and restart MySQL.
+# the server's total RAM. This will be referred to as DMR (dedicated MySQL RAM).
 
 sudo vi /etc/mysql/my.cnf
+
+# Then set:
+
+# innodb_buffer_pool_size to DMR
 
 [mysqld]
 innodb_buffer_pool_size = 1G
