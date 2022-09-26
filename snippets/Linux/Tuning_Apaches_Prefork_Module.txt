@@ -1,0 +1,34 @@
+# First, you need to decide how much RAM to dedicate to Apache. On a server
+# running Apache, PHP, and MySQL you should dedicate roughly 25% of the server's
+# total RAM. On a server just running Apache you should dedicate roughly 75% of
+# the server's total RAM. This will be referred to as DAR (dedicated Apache
+# RAM).
+
+# Second, you need to calculate on average how much RAM each Apache process
+# uses. This will be referred to as AAPRU (average Apache process RAM usage)
+# going forward.
+
+# The following command will show all the current Apache processes and how much
+# RAM they're using. From this you can then calculate the average. Be sure to take
+# into consideration how much RAM could potentially be used by Apache in the
+# future!
+
+ps aux | grep "apache2" | awk "{print \$6}"
+
+# Then set:
+
+# MaxRequestWorkers to DAR / AAPRU
+# ServerLimit to MaxRequestWorkers
+# StartServers to MaxRequestWorkers / 4
+# MinSpareServers to StartServers
+# MaxSpareServers: MaxRequestWorkers / 2
+# MaxConnectionsPerChild to 1000
+
+<IfModule mpm_prefork_module>
+	MaxRequestWorkers 32
+	ServerLimit 32
+	StartServers 8
+	MinSpareServers 8
+	MaxSpareServers 16
+	MaxConnectionsPerChild 1000
+</IfModule>
