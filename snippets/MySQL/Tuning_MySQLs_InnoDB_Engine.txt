@@ -1,0 +1,7 @@
+# Apache, PHP, and MySQL server: 25% RAM
+# MySQL server: 75% RAM
+
+sudo vi /etc/mysql/my.cnf
+
+[mysqld]
+innodb_buffer_pool_size = 1G
