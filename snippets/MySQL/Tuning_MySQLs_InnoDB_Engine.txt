@@ -1,5 +1,9 @@
-# Apache, PHP, and MySQL server: 25% RAM
-# MySQL server: 75% RAM
+# First, you need to decide how much RAM to dedicate to MySQL. On a server
+# running Apache, PHP, and MySQL you should dedicate roughly 25% of the server's
+# total RAM. On a server just running MySQL you should dedicate roughly 75% of
+# the server's total RAM.
+
+# Then set innodb_buffer_pool_size to that value and restart MySQL.
 
 sudo vi /etc/mysql/my.cnf
 
