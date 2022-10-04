@@ -22,6 +22,8 @@ ps aux | grep "apache2" | awk "{print \$6}"
 # MaxSpareServers: MaxRequestWorkers / 2
 # MaxConnectionsPerChild to 1000
 
+sudo vi /etc/apache2/mods-enabled/mpm_prefork.conf
+
 <IfModule mpm_prefork_module>
 	MaxRequestWorkers 32
 	ServerLimit 32
