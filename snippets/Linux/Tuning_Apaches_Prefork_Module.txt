@@ -9,9 +9,7 @@
 # going forward.
 
 # The following command will show all the current Apache processes and how much
-# RAM they're using. From this you can then calculate the average. Be sure to take
-# into consideration how much RAM could potentially be used by Apache in the
-# future!
+# RAM they're using. From this you can then estimate the average RAM usage.
 
 ps aux | grep "apache2" | awk "{print \$6}"
 
