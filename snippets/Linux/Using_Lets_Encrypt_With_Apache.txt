@@ -1,0 +1,11 @@
+# create
+sudo apt install certbot python3-certbot-apache
+sudo certbot --apache -d example.com --register-unsafely-without-email
+
+# check
+sudo apache2ctl configtest
+sudo systemctl status certbot.timer
+sudo certbot renew --dry-run
+
+# delete
+certbot delete --cert-name example.com
