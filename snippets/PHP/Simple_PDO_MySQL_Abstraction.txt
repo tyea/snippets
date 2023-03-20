@@ -1,0 +1,162 @@
+<?php
+
+// requires pdo's mysqlnd driver, not pdo's libmysql driver... they behave differently!
+
+$_DB = null;
+
+function db(): Database
+{
+	global $_DB;
+	if (!$_DB) {
+		$_DB = new Database();
+	}
+	return $_DB;
+}
+
+class Database
+{
+	private $dsn;
+	private $username;
+	private $password;
+	private $options;
+
+	public function connect(array $settings = [])
+	{
+		$this->dsn = sprintf(
+			"mysql:host=%s;port=%s;dbname=%s;charset=%s",
+			$settings["host"],
+			$settings["port"],
+			$settings["database"],
+			$settings["charset"]
+		);
+		$this->username = $settings["username"];
+		$this->password = $settings["password"];
+		$this->options = $settings["options"];
+	}
+
+	private $pdo = null;
+
+	public function pdo(): Pdo
+	{
+		if (!$this->pdo) {
+			$this->pdo = new Pdo($this->dsn, $this->username, $this->password, $this->options);
+		}
+		return $this->pdo;
+	}
+
+	public function statement(string $query, array $params = []): PdoStatement
+	{
+		$statement = $this->pdo()->prepare($query);
+		if (!$statement->execute($params)) {
+			throw new Exception();
+		}
+		return $statement;
+	}
+
+	public function execute(string $query, array $params = []): void
+	{
+		$this->statement($query, $params);
+	}
+
+	public function insert(string $query, array $params = []): mixed
+	{
+		$this->statement($query, $params);
+		return $this->pdo()->lastInsertId();
+	}
+
+	public function rows(string $query, array $params = []): array
+	{
+		$statement = $this->statement($query, $params);
+		return $statement->fetchAll(Pdo::FETCH_ASSOC);
+	}
+
+	public function row(string $query, array $params = []): ?array
+	{
+		$rows = $this->rows($query, $params);
+		return $rows[0] ?? null;
+	}
+
+	public function column(string $query, array $params = []): array
+	{
+		$statement = $this->statement($query, $params);
+		$rows = $statement->fetchAll(Pdo::FETCH_NUM);
+		$column = [];
+		foreach ($rows as $row) {
+			$column[] = $row[0];
+		}
+		return $column;
+	}
+
+	public function value(string $query, array $params = []): mixed
+	{
+		$column = $this->column($query, $params);
+		return $column[0] ?? null;
+	}
+
+	public function map(string $query, array $params = []): array
+	{
+		$statement = $this->statement($query, $params);
+		$rows = $statement->fetchAll(Pdo::FETCH_NUM);
+		$map = [];
+		foreach ($rows as $row) {
+			$map[$row[0]] = $row[1];
+		}
+		return $map;
+	}
+
+	public function update(string $query, array $params = []): int
+	{
+		$statement = $this->statement($query, $params);
+		return $statement->rowCount();
+	}
+
+	public function delete(string $query, array $params = []): int
+	{
+		$statement = $this->statement($query, $params);
+		return $statement->rowCount();
+	}
+
+	public function transaction(callable $transaction): bool
+	{
+		$this->pdo()->beginTransaction();
+		try {
+			call_user_func($transaction);
+			$this->pdo()->commit();
+			return true;
+		} catch (Exception $exception) {
+			$this->pdo()->rollback();
+			return false;
+		}
+	}
+	
+	private $procedures = [];
+	
+	public function procedure(string $name, callable $procedure): void
+	{
+		$this->procedures[$name] = $procedure;
+	}
+	
+	public function call(): mixed
+	{
+		$args = func_get_args();
+		$name = array_shift($args);
+		if (!array_key_exists($name, $this->procedures)) {
+			throw new Exception();
+		}
+		return call_user_func_array($this->procedures[$name], $args);
+	}
+}
+
+db()->connect([
+	"host" => "127.0.0.1",
+	"port" => 3306,
+	"database" => "example",
+	"charset" => "utf8mb4",
+	"username" => "root",
+	"password" => "password",
+	"options" => [
+		Pdo::ATTR_ERRMODE => Pdo::ERRMODE_EXCEPTION,
+		Pdo::ATTR_EMULATE_PREPARES => false,
+		Pdo::ATTR_TIMEOUT => 3
+	]
+]);
