@@ -1,0 +1,11 @@
+_.mixin({
+	startsWith: function (haystack, needle) {
+		return haystack.slice(0, needle.length) == needle;
+	},
+	includes: function (haystack, needle) {
+		return haystack.indexOf(needle) > -1;
+	},
+	endsWith: function (haystack, needle) {
+		return haystack.slice(haystack.length - needle.length, haystack.length) == needle;
+	}
+});
