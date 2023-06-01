@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Lorem Ipsum</title>
+        <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.4/css/bulma.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/fontawesome-free@1.0.4/css/all.min.css">
+    </head>
+    <body>
+        <section class="section">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <figure class="mx-auto image is-128x128">
+                            <img src="https://picsum.photos/256" class="is-rounded">
+                        </figure>
+                        <p class="is-size-1 has-text-centered mb-2">
+                            Lorem Ipsum
+                        </p>
+                        <p class="has-text-centered mb-6">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        </p>
+                        <p class="mb-4">
+                            <a href="" target="_blank" class="button is-fullwidth">
+                                <span class="icon">
+                                    <i class="fab fa-github"></i>
+                                </span>
+                                <span>
+                                    GitHub
+                                </span>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
