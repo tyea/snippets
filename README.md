@@ -2,7 +2,7 @@
 
 ## About
 
-This repository is a collection of useful snippets and skeletons.
+This repository is a collection of useful snippets.
 
 ## Author
 
