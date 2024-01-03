@@ -1,0 +1,9 @@
+$this->renderable(function (ValidationException $validationException): JsonResponse {
+    $errors = [];
+    foreach ($validationException->errors() as $field => $messages) {
+        $errors[$field] = $messages;
+    }
+    return new JsonResponse([
+        "errors" => $errors
+    ], 422);
+});
