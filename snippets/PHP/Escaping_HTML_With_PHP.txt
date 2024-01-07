@@ -1,6 +1,6 @@
 <?php
 
-function escape($input)
+function escape(string $string): string
 {
-	return htmlspecialchars($input, ENT_COMPAT, "UTF-8");
+	return htmlspecialchars($string, ENT_COMPAT);
 }
