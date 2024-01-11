@@ -1,0 +1,40 @@
+BACKUPS_DIRECTORY="/home/user/backups"
+BACKUPS_KEEP="7"
+
+WEBSITE=${1}
+WEBSITES_DIRECTORY="/var/www"
+
+DATABASE=${2}
+DATABASE_USER="user"
+DATABASE_PASSWORD="password"
+
+NOW=$(date +%F_%T)
+
+if [[ ! -z "${WEBSITE}" ]]
+then
+
+	# CREATE BACKUPS DIRECTORY
+	mkdir -p ${BACKUPS_DIRECTORY}/${WEBSITE}
+	
+	# BACKUP WEBSITE
+	tar -C ${WEBSITES_DIRECTORY} -czf ${BACKUPS_DIRECTORY}/${WEBSITE}/${NOW}.tar.gz ${WEBSITE}
+	
+	if [[ ! -z "${DATABASE}" ]]
+	then
+		# BACKUP DATABASE
+		mysqldump -u ${DATABASE_USER} -p${DATABASE_PASSWORD} --single-transaction --skip-lock-tables ${DATABASE} | gzip > ${BACKUPS_DIRECTORY}/${WEBSITE}/${NOW}.sql.gz
+		BACKUPS_KEEP=$(( ${BACKUPS_KEEP} * 2))
+	fi
+	
+	# CLEAN BACKUPS
+	BACKUPS_KEEP=$(( ${BACKUPS_KEEP} + 1 ))
+	FILES=$(ls -1 ${BACKUPS_DIRECTORY}/${WEBSITE} | sort -r | tail -n +${BACKUPS_KEEP})
+	while read -r FILE
+	do
+		if [[ -n "${FILE}" ]]
+		then
+			rm ${BACKUPS_DIRECTORY}/${WEBSITE}/${FILE}
+		fi
+	done <<< "${FILES}"
+	
+fi
