@@ -1,3 +1,7 @@
+CREATE DATABASE `foo` CHARACTER SET 'utf8mb4';
+
+USE `foo`;
+
 CREATE TABLE `organisations` (
     `id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
     `name` VARCHAR(255) NOT NULL,
