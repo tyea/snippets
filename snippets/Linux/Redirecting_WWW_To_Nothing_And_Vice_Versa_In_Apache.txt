@@ -1,0 +1,15 @@
+# REDIRECT NOTHING TO WWW
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^example.com [NC]
+  RewriteRule ^(.*)$ https://www.example.com/$1 [L,R=301]
+</IfModule>
+
+# REDIRECT WWW TO NOTHING
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www.example.com [NC]
+  RewriteRule ^(.*)$ https://example.com/$1 [L,R=301]
+</IfModule>
