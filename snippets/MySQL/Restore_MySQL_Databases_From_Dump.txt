@@ -1,0 +1,1 @@
+gunzip < dump.sql.gz | mysql -u root -p database
